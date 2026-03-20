@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "api": "php -S 127.0.0.1:4000 -t api"
   },
   "dependencies": {
     "lucide-react": "^0.577.0",

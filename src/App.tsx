@@ -65,17 +65,17 @@ export default function App() {
     try {
       let html = '';
       try {
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+        const proxyUrl = window.location.hostname === 'localhost' ? `http://127.0.0.1:4000/fetch.php?url=${encodeURIComponent(targetUrl)}` : `https://metatags.akoladigital.com/api/fetch.php?url=${encodeURIComponent(targetUrl)}`;
         const response = await fetch(proxyUrl);
-        if (!response.ok) throw new Error('Primary proxy failed');
-        const data = await response.json();
-        html = data.contents;
+        if (!response.ok) throw new Error('Local PHP API proxy failed');
+        html = await response.text();
       } catch (err1) {
-        console.warn("Primary proxy failed, attempting fallback...", err1);
-        const fallbackProxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`;
+        console.warn("Local PHP proxy failed (is 'npm run api' running?), attempting open internet fallback...", err1);
+        const fallbackProxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
         const fallbackResponse = await fetch(fallbackProxyUrl);
         if (!fallbackResponse.ok) throw new Error('Fallback proxy failed');
-        html = await fallbackResponse.text();
+        const data = await fallbackResponse.json();
+        html = data.contents;
       }
 
       if (!html) throw new Error("Could not fetch page content.");
